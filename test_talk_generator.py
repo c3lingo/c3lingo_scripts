@@ -31,7 +31,6 @@ def test_talk_no_translation():
                     'heyhej  ',
                     'Fahrplan: https://pretalx.c3voc.de/rc3-2021-r3s/talk/QED93K/  ',
                     'Slides (if available): https://speakers.c3lingo.org/talks/ea266d48-e185-5dbe-90dd-801a8fbe6ecc/  ',
-                    '→ en: one',
                     '']
 
     talks = list(extract_talks(3, test_content))
