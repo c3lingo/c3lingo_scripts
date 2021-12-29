@@ -41,8 +41,8 @@ def test_talk_no_translation():
     assert_that(talk.speaker, equal_to('heyhej'))
     assert_that(talk.fahrplan_url, equal_to('https://pretalx.c3voc.de/rc3-2021-r3s/talk/QED93K/'))
     assert_that(talk.date, equal_to(3))
-    assert_that(talk.time, equal_to('10:45'))
-    assert_that(talk.place, equal_to('Ada'))
+    assert_that(talk.time, equal_to(time.fromisoformat('10:45')))
+    assert_that(talk.place, equal_to('r3s - Monheim/Rhein'))
 
 
 def test_talk_translations():
