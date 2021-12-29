@@ -1,6 +1,7 @@
 import re
 from collections import namedtuple
-from datetime import timedelta
+from datetime import timedelta, time
+
 
 def format_toot(format, title, date, time, place):
     return format.format(title, date, time, place)
@@ -29,10 +30,9 @@ def extract_duration(duration_string):
 
 
 def extract_spacetime_coordinates(line):
-    print(line.strip().split())
     (the_language, the_time, the_duration, *the_place) = line.strip().split()
     the_language = the_language.strip('[]')
-    the_time = the_time.strip('*')
+    the_time = time.fromisoformat(the_time.strip('*'))
     the_duration = extract_duration(the_duration.strip(','))
     the_place = ' '.join(the_place)
     the_place = the_place.split(']')[0].strip('[')
