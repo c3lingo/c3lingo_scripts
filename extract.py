@@ -94,11 +94,14 @@ def extract_talks(day, content):
             match = re.match(TRANSLATION_RE, line)
             if match:
                 the_translations = current_talk.translations + (match.group('lang'),)
-                the_translators = current_talk.translators + tuple(t.strip()
-                                                                   for t
-                                                                   in match.group('translators').split(','))
-                current_talk = current_talk._replace(translations=the_translations,
-                                                     translators=the_translators)
+                new_translators = tuple(t.strip()
+                                        for t
+                                        in match.group('translators').split(',')
+                                        if match.group('translators'))
+                the_translators = current_talk.translators + new_translators
+                if new_translators:
+                    current_talk = current_talk._replace(translations=the_translations,
+                                                         translators=the_translators)
             else:
                 yield current_talk
                 current_talk = Talk(title='',
