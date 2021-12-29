@@ -1,4 +1,4 @@
-from extract import extract_talks, TRANSLATION_RE
+from extract import extract_talks, TRANSLATION_RE, extract_spacetime_coordinates
 from hamcrest import assert_that, equal_to, contains
 import re
 
@@ -55,3 +55,7 @@ def test_talk_translations():
     assert_that(len(talk.translations), equal_to(2))
     print(talk.translations)
     assert_that(talk.translations, contains('en', 'ru'))
+
+
+def test_extract_spacetime_coordinates():
+    the_language, the_time, the_duration, the_place = extract_spacetime_coordinates('[de] **10:45** +00:15, [r3s - Monheim/Rhein](https://meet.ffmuc.net/rc3r3sc3lingolowlatency)  ')

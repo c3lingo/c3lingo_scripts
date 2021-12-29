@@ -6,17 +6,36 @@ def format_toot(format, title, date, time, place):
     return format.format(title, date, time, place)
 
 
-Talk = namedtuple('Talk', ['title', 'date', 'time', 'place', 'translations'])
+Talk = namedtuple('Talk', ['title',
+                           'date',
+                           'time',
+                           'duration',
+                           'place',
+                           'speaker',
+                           'language',
+                           'fahrplan_url',
+                           'translations'])
 
 
 TRANSLATION_RE = r'^\s*→\s*(?P<lang>[a-z]{2})\s*:'
 
+
+def extract_spacetime_coordinates(line):
+    print(line.strip().split())
+    (the_language, the_time, the_duration, *the_place) = line.strip().split()
+    return the_language, the_time, the_duration, the_place
+
+
 def extract_talks(day, content):
     new_talk = False
-    current_talk = ''
+    the_title = ''
     the_date = day
     the_time = ''
+    the_duration = ''
     the_place = ''
+    the_speaker = ''
+    the_language = ''
+    the_fahrplan_url = ''
     translations = ()
 
     for line in content:
@@ -26,23 +45,24 @@ def extract_talks(day, content):
             continue
 
         if new_talk and line.startswith('['):
-            _, the_time, _, the_place = line.strip().split()
+            print(line.strip().split())
+            the_language, the_time, the_duration, the_place = line.strip().split()
             continue
 
         if new_talk and line.startswith('[') is False:
-            current_talk = line.strip()
+            the_title = line.strip()
             new_talk = False
             continue
 
-        if current_talk:
+        if the_title:
             match = re.match(TRANSLATION_RE, line)
             if match:
                 translations += (match.group('lang'),)
 
         # An empty line is the end of a talk block
         if not line.strip():
-            yield Talk(current_talk, the_date, the_time, the_place, translations)
-            current_talk = ''
+            yield Talk(the_title, the_date, the_time, the_place, translations)
+            the_title = ''
             the_time = ''
             the_place = ''
             translations = ()
@@ -51,7 +71,7 @@ def extract_talks(day, content):
 
 def main():
     new_talk = False
-    current_talk= ''
+    current_talk = ''
     the_date = '3'
     the_time = ''
     the_place = ''
