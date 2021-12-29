@@ -26,10 +26,10 @@ def test_translation_re():
 
 def test_talk_no_translation():
     test_content = ['### #1  ',
-                    '[de] **10:45** +00:15, [r3s - Monheim/Rhein](https://meet.ffmuc.net/rc3r3sc3lingolowlatency)  '
-                    '**R3S Opening** (Lightning Talk)  '
-                    'heyhej  '
-                    'Fahrplan: https://pretalx.c3voc.de/rc3-2021-r3s/talk/QED93K/  '
+                    '[de] **10:45** +00:15, [r3s - Monheim/Rhein](https://meet.ffmuc.net/rc3r3sc3lingolowlatency)  ',
+                    '**R3S Opening** (Lightning Talk)  ',
+                    'heyhej  ',
+                    'Fahrplan: https://pretalx.c3voc.de/rc3-2021-r3s/talk/QED93K/  ',
                     'Slides (if available): https://speakers.c3lingo.org/talks/ea266d48-e185-5dbe-90dd-801a8fbe6ecc/  ',
                     '→ en: one',
                     '']
@@ -47,10 +47,10 @@ def test_talk_no_translation():
 
 def test_talk_translations():
     test_content = ['### #1  ',
-                    '[de] **10:45** +00:15, [r3s - Monheim/Rhein](https://meet.ffmuc.net/rc3r3sc3lingolowlatency)  '
-                    '**R3S Opening** (Lightning Talk)  '
-                    'heyhej  '
-                    'Fahrplan: https://pretalx.c3voc.de/rc3-2021-r3s/talk/QED93K/  '
+                    '[de] **10:45** +00:15, [r3s - Monheim/Rhein](https://meet.ffmuc.net/rc3r3sc3lingolowlatency)  ',
+                    '**R3S Opening** (Lightning Talk)  ',
+                    'heyhej  ',
+                    'Fahrplan: https://pretalx.c3voc.de/rc3-2021-r3s/talk/QED93K/  ',
                     'Slides (if available): https://speakers.c3lingo.org/talks/ea266d48-e185-5dbe-90dd-801a8fbe6ecc/  ',
                     '→ en: one',
                     '→ ru: three, four',

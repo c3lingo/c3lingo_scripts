@@ -40,70 +40,69 @@ def extract_spacetime_coordinates(line):
 
 
 def extract_talks(day, content):
-    new_talk = False
-    the_title = ''
-    the_date = day
-    the_time = ''
-    the_duration = ''
-    the_place = ''
-    the_speaker = ''
-    the_language = ''
-    the_fahrplan_url = ''
-    translations = ()
+    current_talk = Talk(title='',
+                        date=day,
+                        time='',
+                        duration='',
+                        place='',
+                        speaker='',
+                        language='',
+                        fahrplan_url='',
+                        translations=())
 
     current_state = 'Start'
 
     for line in content:
-        # This marks the start of a talk in the plan
-        if line.startswith('### #'):
-            new_talk = True
+
+        if current_state == 'Start' and line.startswith('### #'):
+            current_state = 'Need coordinates'
             continue
 
-        if new_talk and line.startswith('['):
+        if current_state == 'Need coordinates':
             the_language, the_time, the_duration, the_place = extract_spacetime_coordinates(line)
-            new_talk = False
+            current_talk = current_talk._replace(time=the_time,
+                                                 duration=the_duration,
+                                                 place=the_place,
+                                                 language=the_language)
+            current_state = 'Need title'
             continue
 
-        if the_language:
-            the_title = line.strip()
+        if current_state == 'Need title':
+            current_talk = current_talk._replace(title=line.strip())
+            current_state = 'Need speaker'
             continue
 
-        if the_title:
-            the_speaker = line.strip()
+        if current_state == 'Need speaker':
+            current_talk = current_talk._replace(speaker=line.strip())
+            current_state = 'Need Fahrplan'
             continue
 
-        if line.startswith('Fahrplan'):
-            the_fahrplan_url = line.split(' ')[1].strip()
+        if current_state == 'Need Fahrplan':
+            current_talk = current_talk._replace(fahrplan_url=line.split(':')[1].strip())
+            current_state = 'Need Slides'
+            continue
+
+        if current_state == 'Need Slides':
+            current_state = 'Need translations'
             continue
     
-        if the_fahrplan_url:
+        if current_state == 'Need translations':
             match = re.match(TRANSLATION_RE, line)
-            print(line)
-            print(match)
             if match:
-                translations += (match.group('lang'),)
-
-        # An empty line is the end of a talk block
-        if not line.strip():
-            yield Talk(the_title,
-                       the_date,
-                       the_time,
-                       the_duration,
-                       the_place,
-                       the_speaker,
-                       the_language,
-                       the_fahrplan_url,
-                       translations)
-
-            the_title = ''
-            the_time = ''
-            the_duration = ''
-            the_place = ''
-            the_speaker = ''
-            the_language = ''
-            the_fahrplan_url = ''
-            translations = ()
-            continue
+                the_translations = current_talk.translations + (match.group('lang'),)
+                current_talk = current_talk._replace(translations=the_translations)
+            else:
+                yield current_talk
+                current_talk = Talk(title='',
+                                    date=day,
+                                    time='',
+                                    duration='',
+                                    place='',
+                                    speaker='',
+                                    language='',
+                                    fahrplan_url='',
+                                    translations=())
+                current_state = 'Start'
 
 
 def main():
