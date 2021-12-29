@@ -97,7 +97,7 @@ def extract_talks(day, content):
                 new_translators = tuple(t.strip()
                                         for t
                                         in match.group('translators').split(',')
-                                        if match.group('translators'))
+                                        if match.group('translators').strip())
                 the_translators = current_talk.translators + new_translators
                 if new_translators:
                     current_talk = current_talk._replace(translations=the_translations,
