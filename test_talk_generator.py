@@ -1,5 +1,6 @@
 from extract import extract_talks, TRANSLATION_RE, extract_spacetime_coordinates
 from hamcrest import assert_that, equal_to, contains
+from datetime import timedelta
 import re
 
 
@@ -62,6 +63,5 @@ def test_extract_spacetime_coordinates():
     assert_that(the_language, equal_to('de'))
     # FIXME: Make that a time
     assert_that(the_time, equal_to('10:45'))
-    #FIXME: Make that a timedelta
-    assert_that(the_duration, equal_to('+00:15'))
+    assert_that(the_duration, equal_to(timedelta(hours=0, minutes=15)))
     assert_that(the_place, equal_to('r3s - Monheim/Rhein'))

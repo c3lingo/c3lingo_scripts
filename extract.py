@@ -1,6 +1,6 @@
 import re
 from collections import namedtuple
-
+from datetime import timedelta
 
 def format_toot(format, title, date, time, place):
     return format.format(title, date, time, place)
@@ -20,12 +20,20 @@ Talk = namedtuple('Talk', ['title',
 TRANSLATION_RE = r'^\s*→\s*(?P<lang>[a-z]{2})\s*:'
 
 
+def extract_duration(duration_string):
+    """Create a timedelta from a String like '+00:15'"""
+    hours, minutes = duration_string.strip('+').split(':')
+    hours = int(hours)
+    minutes = int(minutes)
+    return timedelta(hours=hours, minutes=minutes)
+
+
 def extract_spacetime_coordinates(line):
     print(line.strip().split())
     (the_language, the_time, the_duration, *the_place) = line.strip().split()
     the_language = the_language.strip('[]')
     the_time = the_time.strip('*')
-    the_duration = the_duration.strip(',')
+    the_duration = extract_duration(the_duration.strip(','))
     the_place = ' '.join(the_place)
     the_place = the_place.split(']')[0].strip('[')
     return the_language, the_time, the_duration, the_place
