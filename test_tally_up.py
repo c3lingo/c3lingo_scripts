@@ -22,7 +22,7 @@ def test_tally_one_talk():
                                 translations=(),
                                 translators=('one', 'two'))])
     assert_that(scoreboard.keys(), contains_exactly('one', 'two'))
-    assert_that(scoreboard['one'], equal_to(timedelta(hours=0, minutes=15)))
+    assert_that(scoreboard['one'][0], equal_to(timedelta(hours=0, minutes=15)))
 
 
 def test_tally_multiple_talks():
@@ -57,6 +57,6 @@ def test_tally_multiple_talks():
                                 translations=(),
                                 translators=('two',))])
     assert_that(scoreboard.keys(), contains_exactly('one', 'two', 'three'))
-    assert_that(scoreboard['one'], equal_to(timedelta(hours=1, minutes=15)))
-    assert_that(scoreboard['two'], equal_to(timedelta(hours=0, minutes=45)))
-    assert_that(scoreboard['three'], equal_to(timedelta(hours=1, minutes=00)))
+    assert_that(scoreboard['one'][0], equal_to(timedelta(hours=1, minutes=15)))
+    assert_that(scoreboard['two'][0], equal_to(timedelta(hours=0, minutes=45)))
+    assert_that(scoreboard['three'][0], equal_to(timedelta(hours=1, minutes=00)))
