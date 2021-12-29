@@ -51,33 +51,57 @@ def extract_talks(day, content):
     the_fahrplan_url = ''
     translations = ()
 
+    current_state = 'Start'
+
     for line in content:
         # This marks the start of a talk in the plan
-        if line.startswith('#'):
+        if line.startswith('### #'):
             new_talk = True
             continue
 
         if new_talk and line.startswith('['):
-            print(line.strip().split())
-            the_language, the_time, the_duration, the_place = line.strip().split()
-            continue
-
-        if new_talk and line.startswith('[') is False:
-            the_title = line.strip()
+            the_language, the_time, the_duration, the_place = extract_spacetime_coordinates(line)
             new_talk = False
             continue
 
+        if the_language:
+            the_title = line.strip()
+            continue
+
         if the_title:
+            the_speaker = line.strip()
+            continue
+
+        if line.startswith('Fahrplan'):
+            the_fahrplan_url = line.split(' ')[1].strip()
+            continue
+    
+        if the_fahrplan_url:
             match = re.match(TRANSLATION_RE, line)
+            print(line)
+            print(match)
             if match:
                 translations += (match.group('lang'),)
 
         # An empty line is the end of a talk block
         if not line.strip():
-            yield Talk(the_title, the_date, the_time, the_place, translations)
+            yield Talk(the_title,
+                       the_date,
+                       the_time,
+                       the_duration,
+                       the_place,
+                       the_speaker,
+                       the_language,
+                       the_fahrplan_url,
+                       translations)
+
             the_title = ''
             the_time = ''
+            the_duration = ''
             the_place = ''
+            the_speaker = ''
+            the_language = ''
+            the_fahrplan_url = ''
             translations = ()
             continue
 

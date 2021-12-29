@@ -30,24 +30,29 @@ def test_talk_no_translation():
                     '**R3S Opening** (Lightning Talk)  '
                     'heyhej  '
                     'Fahrplan: https://pretalx.c3voc.de/rc3-2021-r3s/talk/QED93K/  '
-                    'Slides (if available): https://speakers.c3lingo.org/talks/ea266d48-e185-5dbe-90dd-801a8fbe6ecc/  '
+                    'Slides (if available): https://speakers.c3lingo.org/talks/ea266d48-e185-5dbe-90dd-801a8fbe6ecc/  ',
                     '→ en: one',
-                    '→ fr: two, three',]
+                    '']
+
     talks = list(extract_talks(3, test_content))
     assert_that(len(talks), equal_to(1))
     talk = talks[0]
     assert_that(talk.title, equal_to('R3S Opening'))
+    assert_that(talk.speaker, equal_to('heyhej'))
+    assert_that(talk.fahrplan_url, equal_to('https://pretalx.c3voc.de/rc3-2021-r3s/talk/QED93K/'))
     assert_that(talk.date, equal_to(3))
     assert_that(talk.time, equal_to('10:45'))
     assert_that(talk.place, equal_to('Ada'))
 
 
 def test_talk_translations():
-    test_content = ['#1',
-                    '[de] 11:30 +01:00, Ada',
-                    'Von Menschen radikalisiert: Über Rassismus im Internet',
-                    'Michael Kreil',
-                    '→ en: one, two',
+    test_content = ['### #1  ',
+                    '[de] **10:45** +00:15, [r3s - Monheim/Rhein](https://meet.ffmuc.net/rc3r3sc3lingolowlatency)  '
+                    '**R3S Opening** (Lightning Talk)  '
+                    'heyhej  '
+                    'Fahrplan: https://pretalx.c3voc.de/rc3-2021-r3s/talk/QED93K/  '
+                    'Slides (if available): https://speakers.c3lingo.org/talks/ea266d48-e185-5dbe-90dd-801a8fbe6ecc/  ',
+                    '→ en: one',
                     '→ ru: three, four',
                     '']
     talks = list(extract_talks(3, test_content))
