@@ -80,7 +80,7 @@ def extract_talks(day, content):
             continue
 
         if current_state == 'Need Fahrplan':
-            current_talk = current_talk._replace(fahrplan_url=line.split(':')[1].strip())
+            current_talk = current_talk._replace(fahrplan_url=line.replace('Fahrplan:', '').strip())
             current_state = 'Need Slides'
             continue
 
