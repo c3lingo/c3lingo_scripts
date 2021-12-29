@@ -64,3 +64,4 @@ def test_extract_spacetime_coordinates():
     assert_that(the_time, equal_to('10:45'))
     #FIXME: Make that a timedelta
     assert_that(the_duration, equal_to('+00:15'))
+    assert_that(the_place, equal_to('r3s - Monheim/Rhein'))
