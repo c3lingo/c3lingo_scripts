@@ -1,5 +1,5 @@
 from extract import extract_talks, TRANSLATION_RE, extract_spacetime_coordinates
-from hamcrest import assert_that, equal_to, contains
+from hamcrest import assert_that, equal_to, contains_exactly
 from datetime import timedelta, time
 import re
 
@@ -59,7 +59,7 @@ def test_talk_translations():
     talk = talks[0]
     assert_that(len(talk.translations), equal_to(2))
     print(talk.translations)
-    assert_that(talk.translations, contains('en', 'ru'))
+    assert_that(talk.translations, contains_exactly('en', 'ru'))
 
 
 def test_extract_spacetime_coordinates():
