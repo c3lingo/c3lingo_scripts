@@ -89,6 +89,13 @@ def stats(args):
     print("Size of team: ", len(all_translators))
 
 
+def untranslated(args):
+    untranslated = [t for t in extract_talks(0, args.infile)
+                    if not t.translations]
+    for talk in untranslated:
+        print("* ", talk.title)
+
+
 if __name__ == '__main__':
 
     # Create the top level parser
@@ -118,6 +125,11 @@ if __name__ == '__main__':
     parser_stats.add_argument("infile", type=argparse.FileType(), nargs='+', help="The files containing the shift assignments (multiple files possible)")
     parser_stats.add_argument("-v", "--verbose", action="store_true", help="Print the details")
     parser_stats.set_defaults(func=stats)
+
+    # Create the parse for the untranslated talks
+    parser_untranslated = subparsers.add_parser('untranslated', description="List the untranslated talks")
+    parser_untranslated.add_argument("infile", type=argparse.FileType(), help="Markdown file containing the shift assignments")
+    parser_untranslated.set_defaults(func=untranslated)
 
     # go for it
     args = parser.parse_args()
