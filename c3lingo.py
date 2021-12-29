@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+from datetime import timedelta
 from extract import extract_talks
 from prepare_toot import format_toot
 from tallyUpHours import tally_up
@@ -47,6 +48,28 @@ def print_toots(args):
             print(format_toot(talk, lang))
 
 
+def stats(args):
+    all_talks = [t for f in args.infile
+                 for t in extract_talks(0, f)]
+
+    interpreted_talks = [t for t in all_talks if t.translations]
+
+    print("All translatable talks", len(all_talks))
+    print("Talks interpreted: ", len(interpreted_talks))
+    print("Percentage: ", (float(len(interpreted_talks))/len(all_talks))*100)
+
+    print("Total hours: ", sum((talk.duration for talk in interpreted_talks), timedelta()))
+
+    all_translators = set(translator for talk in all_talks
+                          for translator in talk.translators)
+
+    if args.verbose:
+        for t in all_translators:
+            print('\t* ', t)
+
+    print("Size of team: ", len(all_translators))
+
+
 if __name__ == '__main__':
 
     # Create the top level parser
@@ -59,9 +82,9 @@ if __name__ == '__main__':
     parser_timesheet.add_argument("-v", "--verbose", action="store_true", help="Print the talks and duration for checking")
     parser_timesheet.set_defaults(func=timesheet)
 
-    # Create the subarser for the leaderboard
+    # Create the subparser for the leaderboard
     parser_leaderboard = subparsers.add_parser('leaderboard', description="Show who translated most")
-    parser_leaderboard.add_argument("infile", type=argparse.FileType(), nargs='+', help="The files containing the shift assignments")
+    parser_leaderboard.add_argument("infile", type=argparse.FileType(), nargs='+', help="The files containing the shift assignments (multiple files possible)")
     parser_leaderboard.add_argument("-v", "--verbose", action="store_true", help="Print the talks and duration for checking")
     parser_leaderboard.set_defaults(func=leaderboard)
 
@@ -70,7 +93,13 @@ if __name__ == '__main__':
     parser_toot.add_argument("day", help="The day of the talks in the infile")
     parser_toot.add_argument("infile", type=argparse.FileType(), help="Markdown file containing the shift assignments")
     parser_toot.set_defaults(func=print_toots)
-    
+
+    # Create the parser for the stats
+    parser_stats = subparsers.add_parser('stats', description="Show statistics about translations")
+    parser_stats.add_argument("infile", type=argparse.FileType(), nargs='+', help="The files containing the shift assignments (multiple files possible)")
+    parser_stats.add_argument("-v", "--verbose", action="store_true", help="Print the details")
+    parser_stats.set_defaults(func=stats)
+
     # go for it
     args = parser.parse_args()
     if hasattr(args, 'func'):
