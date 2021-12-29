@@ -63,6 +63,26 @@ def test_talk_translations():
     assert_that(talk.translators, contains_exactly('one', 'three', 'four'))
 
 
+def test_talk_translation_with_glossary():
+    test_content = ['### #1  ',
+                    '[de] **10:45** +00:15, [r3s - Monheim/Rhein](https://meet.ffmuc.net/rc3r3sc3lingolowlatency)  ',
+                    '**R3S Opening** (Lightning Talk)  ',
+                    'heyhej  ',
+                    'Fahrplan: https://pretalx.c3voc.de/rc3-2021-r3s/talk/QED93K/  ',
+                    'Slides (if available): https://speakers.c3lingo.org/talks/ea266d48-e185-5dbe-90dd-801a8fbe6ecc/  ',
+                    'Glossary',
+                    '→ en: one',
+                    '→ ru: three, four',
+                    '']
+    talks = list(extract_talks(3, test_content))
+    assert_that(len(talks), equal_to(1))
+    talk = talks[0]
+    assert_that(len(talk.translations), equal_to(2))
+    print(talk.translations)
+    assert_that(talk.translations, contains_exactly('en', 'ru'))
+    assert_that(talk.translators, contains_exactly('one', 'three', 'four'))
+
+
 def test_talk_no_translator():
     test_content = ['### #1  ',
                     '[de] **10:45** +00:15, [r3s - Monheim/Rhein](https://meet.ffmuc.net/rc3r3sc3lingolowlatency)  ',

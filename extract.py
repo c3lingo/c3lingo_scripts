@@ -102,7 +102,7 @@ def extract_talks(day, content):
                 if new_translators:
                     current_talk = current_talk._replace(translations=the_translations,
                                                          translators=the_translators)
-            else:
+            elif not line.strip():
                 yield current_talk
                 current_talk = Talk(title='',
                                     date=day,
