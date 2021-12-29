@@ -68,9 +68,7 @@ def extract_talks(day, content):
             continue
 
         if current_state == 'Need title':
-            print(line)
             the_title = line.split('**')[1]
-            print(the_title)
             current_talk = current_talk._replace(title=the_title)
 
             current_state = 'Need speaker'
