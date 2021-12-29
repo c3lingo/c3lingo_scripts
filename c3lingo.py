@@ -22,6 +22,7 @@ def leaderboard(args):
                  for t in extract_talks(0, f)]
     scoreboard = tally_up(all_talks)
     hours = {}
+    talks_count = {}
 
     for nick in scoreboard:
         nick_hours = scoreboard[nick][0]
@@ -30,6 +31,14 @@ def leaderboard(args):
         else:
             hours[nick_hours] = [nick]
 
+        nick_talks = len(scoreboard[nick][1])
+        if nick_talks in talks_count:
+            talks_count[nick_talks].append(nick)
+        else:
+            talks_count[nick_talks] = [nick]
+
+
+    print("Most active by time")
     sorted_hours = list(hours.keys())
     sorted_hours.sort()
     sorted_hours.reverse()
@@ -40,6 +49,16 @@ def leaderboard(args):
             if args.verbose:
                 for talk in scoreboard[nick][1]:
                     print('\t* {}: {}'.format(talk.title, talk.duration))
+
+    print('-'*40)
+    print("Most active by number of talks")
+    sorted_talks_count = list(talks_count.keys())
+    sorted_talks_count.sort()
+    sorted_talks_count.reverse()
+    for c in sorted_talks_count:
+        talks_count[c].sort()
+        for nick in talks_count[c]:
+            print('{},{}'.format(nick, c))
 
 
 def print_toots(args):
