@@ -68,7 +68,11 @@ def extract_talks(day, content):
             continue
 
         if current_state == 'Need title':
-            current_talk = current_talk._replace(title=line.strip())
+            print(line)
+            the_title = line.split('**')[1]
+            print(the_title)
+            current_talk = current_talk._replace(title=the_title)
+
             current_state = 'Need speaker'
             continue
 
@@ -85,7 +89,7 @@ def extract_talks(day, content):
         if current_state == 'Need Slides':
             current_state = 'Need translations'
             continue
-    
+
         if current_state == 'Need translations':
             match = re.match(TRANSLATION_RE, line)
             if match:
