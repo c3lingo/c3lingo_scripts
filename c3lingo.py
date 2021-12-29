@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 import argparse
-from collections import namedtuple
 from extract import extract_talks
 from tallyUpHours import tally_up
-
 
 
 def timesheet(args):
