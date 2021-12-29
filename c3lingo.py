@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import argparse
 from extract import extract_talks
+from prepare_toot import format_toot
 from tallyUpHours import tally_up
 
 
@@ -40,6 +41,12 @@ def leaderboard(args):
                     print('\t* {}: {}'.format(talk.title, talk.duration))
 
 
+def print_toots(args):
+    for talk in extract_talks(args.day, args.infile):
+        for lang in talk.translations:
+            print(format_toot(talk, lang))
+
+
 if __name__ == '__main__':
 
     # Create the top level parser
@@ -58,6 +65,12 @@ if __name__ == '__main__':
     parser_leaderboard.add_argument("-v", "--verbose", action="store_true", help="Print the talks and duration for checking")
     parser_leaderboard.set_defaults(func=leaderboard)
 
+    # Create the parser for the toots
+    parser_toot = subparsers.add_parser('toot', description='Print the announcements to toot')
+    parser_toot.add_argument("day", help="The day of the talks in the infile")
+    parser_toot.add_argument("infile", type=argparse.FileType(), help="Markdown file containing the shift assignments")
+    parser_toot.set_defaults(func=print_toots)
+    
     # go for it
     args = parser.parse_args()
     if hasattr(args, 'func'):
