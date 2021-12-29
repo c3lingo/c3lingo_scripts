@@ -23,6 +23,7 @@ TRANSLATION_RE = r'^\s*→\s*(?P<lang>[a-z]{2})\s*:'
 def extract_spacetime_coordinates(line):
     print(line.strip().split())
     (the_language, the_time, the_duration, *the_place) = line.strip().split()
+    the_language = the_language.strip('[]')
     return the_language, the_time, the_duration, the_place
 
 

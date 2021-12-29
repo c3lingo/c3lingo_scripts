@@ -59,3 +59,4 @@ def test_talk_translations():
 
 def test_extract_spacetime_coordinates():
     the_language, the_time, the_duration, the_place = extract_spacetime_coordinates('[de] **10:45** +00:15, [r3s - Monheim/Rhein](https://meet.ffmuc.net/rc3r3sc3lingolowlatency)  ')
+    assert_that(the_language, equal_to('de'))
