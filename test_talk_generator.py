@@ -60,6 +60,7 @@ def test_talk_translations():
     assert_that(len(talk.translations), equal_to(2))
     print(talk.translations)
     assert_that(talk.translations, contains_exactly('en', 'ru'))
+    assert_that(talk.translators, contains_exactly('one', 'three', 'four'))
 
 
 def test_extract_spacetime_coordinates():

@@ -15,10 +15,11 @@ Talk = namedtuple('Talk', ['title',
                            'speaker',
                            'language',
                            'fahrplan_url',
-                           'translations'])
+                           'translations',
+                           'translators'])
 
 
-TRANSLATION_RE = r'^\s*→\s*(?P<lang>[a-z]{2})\s*:'
+TRANSLATION_RE = r'^\s*→\s*(?P<lang>[a-z]{2})\s*:(?P<translators>.*)'
 
 
 def extract_duration(duration_string):
@@ -48,7 +49,8 @@ def extract_talks(day, content):
                         speaker='',
                         language='',
                         fahrplan_url='',
-                        translations=())
+                        translations=(),
+                        translators=())
 
     current_state = 'Start'
 
@@ -92,7 +94,11 @@ def extract_talks(day, content):
             match = re.match(TRANSLATION_RE, line)
             if match:
                 the_translations = current_talk.translations + (match.group('lang'),)
-                current_talk = current_talk._replace(translations=the_translations)
+                the_translators = current_talk.translators + tuple(t.strip()
+                                                                   for t
+                                                                   in match.group('translators').split(','))
+                current_talk = current_talk._replace(translations=the_translations,
+                                                     translators=the_translators)
             else:
                 yield current_talk
                 current_talk = Talk(title='',
@@ -103,7 +109,8 @@ def extract_talks(day, content):
                                     speaker='',
                                     language='',
                                     fahrplan_url='',
-                                    translations=())
+                                    translations=(),
+                                    translators=())
                 current_state = 'Start'
 
 
