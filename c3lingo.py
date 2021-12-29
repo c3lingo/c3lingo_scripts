@@ -93,7 +93,7 @@ def untranslated(args):
     untranslated = [t for t in extract_talks(0, args.infile)
                     if not t.translations]
     for talk in untranslated:
-        print("* ", talk.title)
+        print("* [{talk.title}]({talk.fahrplan_url})".format(talk=talk))
 
 
 if __name__ == '__main__':
