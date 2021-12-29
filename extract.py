@@ -25,6 +25,7 @@ def extract_spacetime_coordinates(line):
     (the_language, the_time, the_duration, *the_place) = line.strip().split()
     the_language = the_language.strip('[]')
     the_time = the_time.strip('*')
+    the_duration = the_duration.strip(',')
     return the_language, the_time, the_duration, the_place
 
 
