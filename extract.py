@@ -16,7 +16,17 @@ Talk = namedtuple('Talk', ['title',
                            'language',
                            'fahrplan_url',
                            'translations',
-                           'translators'])
+                           'translators'],
+                  defaults=['',
+                            0,
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            (),
+                            ()])
 
 
 TRANSLATION_RE = r'^\s*→\s*(?P<lang>[a-z]{2})\s*:(?P<translators>.*)'
@@ -41,16 +51,7 @@ def extract_spacetime_coordinates(line):
 
 
 def extract_talks(day, content):
-    current_talk = Talk(title='',
-                        date=day,
-                        time='',
-                        duration='',
-                        place='',
-                        speaker='',
-                        language='',
-                        fahrplan_url='',
-                        translations=(),
-                        translators=())
+    current_talk = Talk(date=day)
 
     current_state = 'Start'
 
@@ -104,16 +105,7 @@ def extract_talks(day, content):
                                                          translators=the_translators)
             elif not line.strip():
                 yield current_talk
-                current_talk = Talk(title='',
-                                    date=day,
-                                    time='',
-                                    duration='',
-                                    place='',
-                                    speaker='',
-                                    language='',
-                                    fahrplan_url='',
-                                    translations=(),
-                                    translators=())
+                current_talk = Talk(date=day)
                 current_state = 'Start'
 
 
@@ -179,7 +171,7 @@ def main():
             # there is more than one translator
             print(format_toot('Лекция «{}» (день {} {} в зале {}) будет переведена на английский',
                               current_talk, the_date, the_time, the_place))
-        
+
         # An empty line is the end of a talk block
         if not line.strip():
             current_talk = ''
