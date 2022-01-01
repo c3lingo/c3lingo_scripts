@@ -7,7 +7,9 @@ from tallyUpHours import tally_up
 
 
 def timesheet(args):
-    scoreboard = tally_up(extract_talks(args.infile))
+    all_talks = [t for f in args.infile
+                 for t in extract_talks(f)]
+    scoreboard = tally_up(all_talks)
     nicks = list(scoreboard.keys())
     nicks.sort()
     for nick in nicks:
@@ -37,7 +39,6 @@ def leaderboard(args):
         else:
             talks_count[nick_talks] = [nick]
 
-
     print("Most active by time")
     sorted_hours = list(hours.keys())
     sorted_hours.sort()
@@ -62,7 +63,8 @@ def leaderboard(args):
 
 
 def print_toots(args):
-    for talk in extract_talks(args.infile):
+    for talk in [t for f in args.infile
+                 for t in extract_talks(f)]:
         for lang in talk.translations:
             print(format_toot(talk, lang))
 
@@ -90,7 +92,8 @@ def stats(args):
 
 
 def untranslated(args):
-    untranslated = [t for t in extract_talks(args.infile)
+    untranslated = [t for f in args.infile
+                    for t in extract_talks(f)
                     if not t.translations]
     for talk in untranslated:
         print("* [{talk.title}]({talk.fahrplan_url})".format(talk=talk))
@@ -104,7 +107,7 @@ if __name__ == '__main__':
 
     # Create the subparser for the stats
     parser_timesheet = subparsers.add_parser('timesheet', description="Create a timesheet for a day")
-    parser_timesheet.add_argument("infile", type=argparse.FileType(), help="Markdown file containing the shift assignments")
+    parser_timesheet.add_argument("infile", type=argparse.FileType(), nargs='+', help="The files containing the shift assignments (multiple files possible)")
     parser_timesheet.add_argument("-v", "--verbose", action="store_true", help="Print the talks and duration for checking")
     parser_timesheet.set_defaults(func=timesheet)
 
@@ -116,7 +119,7 @@ if __name__ == '__main__':
 
     # Create the parser for the toots
     parser_toot = subparsers.add_parser('toot', description='Print the announcements to toot')
-    parser_toot.add_argument("infile", type=argparse.FileType(), help="Markdown file containing the shift assignments")
+    parser_toot.add_argument("infile", type=argparse.FileType(), nargs='+', help="The files containing the shift assignments (multiple files possible)")
     parser_toot.set_defaults(func=print_toots)
 
     # Create the parser for the stats
@@ -127,7 +130,7 @@ if __name__ == '__main__':
 
     # Create the parse for the untranslated talks
     parser_untranslated = subparsers.add_parser('untranslated', description="List the untranslated talks")
-    parser_untranslated.add_argument("infile", type=argparse.FileType(), help="Markdown file containing the shift assignments")
+    parser_untranslated.add_argument("infile", type=argparse.FileType(), nargs='+', help="The files containing the shift assignments (multiple files possible)")
     parser_untranslated.set_defaults(func=untranslated)
 
     # go for it
