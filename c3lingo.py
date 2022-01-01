@@ -99,6 +99,11 @@ def untranslated(args):
         print("* [{talk.title}]({talk.fahrplan_url})".format(talk=talk))
 
 
+def validate(args):
+    [t for f in args.infile
+     for t in extract_talks(f, f.name)]
+
+
 if __name__ == '__main__':
 
     # Create the top level parser
@@ -132,6 +137,11 @@ if __name__ == '__main__':
     parser_untranslated = subparsers.add_parser('untranslated', description="List the untranslated talks")
     parser_untranslated.add_argument("infile", type=argparse.FileType(), nargs='+', help="The files containing the shift assignments (multiple files possible)")
     parser_untranslated.set_defaults(func=untranslated)
+
+    # Create the subparser for the leaderboard
+    parser_validate = subparsers.add_parser('validate', description="Validate input files")
+    parser_validate.add_argument("infile", type=argparse.FileType(), nargs='+', help="The files containing the shift assignments (multiple files possible)")
+    parser_validate.set_defaults(func=validate)
 
     # go for it
     args = parser.parse_args()
