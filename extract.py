@@ -59,39 +59,33 @@ def extract_talks(day, content):
 
         if current_state == 'Start' and line.startswith('### #'):
             current_state = 'Need coordinates'
-            continue
 
-        if current_state == 'Need coordinates':
+        elif current_state == 'Need coordinates':
             the_language, the_time, the_duration, the_place = extract_spacetime_coordinates(line)
             current_talk = current_talk._replace(time=the_time,
                                                  duration=the_duration,
                                                  place=the_place,
                                                  language=the_language)
             current_state = 'Need title'
-            continue
 
-        if current_state == 'Need title':
+        elif current_state == 'Need title':
             the_title = line.split('**')[1]
             current_talk = current_talk._replace(title=the_title)
 
             current_state = 'Need speaker'
-            continue
 
-        if current_state == 'Need speaker':
+        elif current_state == 'Need speaker':
             current_talk = current_talk._replace(speaker=line.strip())
             current_state = 'Need Fahrplan'
-            continue
 
-        if current_state == 'Need Fahrplan':
+        elif current_state == 'Need Fahrplan':
             current_talk = current_talk._replace(fahrplan_url=line.replace('Fahrplan:', '').strip())
             current_state = 'Need Slides'
-            continue
 
-        if current_state == 'Need Slides':
+        elif current_state == 'Need Slides':
             current_state = 'Need translations'
-            continue
 
-        if current_state == 'Need translations':
+        elif current_state == 'Need translations':
             match = re.match(TRANSLATION_RE, line)
             if match:
                 the_translations = current_talk.translations + (match.group('lang'),)
