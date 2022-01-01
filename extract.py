@@ -51,13 +51,18 @@ def extract_spacetime_coordinates(line):
 
 
 def extract_talks(day, content):
-    current_talk = Talk(date=day)
+    current_talk = None
 
     current_state = 'Start'
 
     for index, line in enumerate(content, start=1):
         try:
-            if current_state == 'Start' and line.startswith('### #'):
+            if current_state == 'Start' and line.startswith('# Translations for'):
+                day = int(line.split(' ')[-1].strip())
+                current_state = 'Start'
+
+            elif current_state == 'Start' and line.startswith('### #'):
+                current_talk = Talk(date=day)
                 current_state = 'Need coordinates'
 
             elif current_state == 'Need coordinates':
