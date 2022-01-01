@@ -50,7 +50,8 @@ def extract_spacetime_coordinates(line):
     return the_language, the_time, the_duration, the_place
 
 
-def extract_talks(day, content):
+def extract_talks(content):
+    day = 0
     current_talk = None
 
     current_state = 'Start'

@@ -7,7 +7,7 @@ from tallyUpHours import tally_up
 
 
 def timesheet(args):
-    scoreboard = tally_up(extract_talks(1, args.infile))
+    scoreboard = tally_up(extract_talks(args.infile))
     nicks = list(scoreboard.keys())
     nicks.sort()
     for nick in nicks:
@@ -19,7 +19,7 @@ def timesheet(args):
 
 def leaderboard(args):
     all_talks = [t for f in args.infile
-                 for t in extract_talks(0, f)]
+                 for t in extract_talks(f)]
     scoreboard = tally_up(all_talks)
     hours = {}
     talks_count = {}
@@ -62,14 +62,14 @@ def leaderboard(args):
 
 
 def print_toots(args):
-    for talk in extract_talks(args.day, args.infile):
+    for talk in extract_talks(args.infile):
         for lang in talk.translations:
             print(format_toot(talk, lang))
 
 
 def stats(args):
     all_talks = [t for f in args.infile
-                 for t in extract_talks(0, f)]
+                 for t in extract_talks(f)]
 
     interpreted_talks = [t for t in all_talks if t.translations]
 
@@ -90,7 +90,7 @@ def stats(args):
 
 
 def untranslated(args):
-    untranslated = [t for t in extract_talks(0, args.infile)
+    untranslated = [t for t in extract_talks(args.infile)
                     if not t.translations]
     for talk in untranslated:
         print("* [{talk.title}]({talk.fahrplan_url})".format(talk=talk))
@@ -116,7 +116,6 @@ if __name__ == '__main__':
 
     # Create the parser for the toots
     parser_toot = subparsers.add_parser('toot', description='Print the announcements to toot')
-    parser_toot.add_argument("day", help="The day of the talks in the infile")
     parser_toot.add_argument("infile", type=argparse.FileType(), help="Markdown file containing the shift assignments")
     parser_toot.set_defaults(func=print_toots)
 
