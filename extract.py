@@ -55,52 +55,55 @@ def extract_talks(day, content):
 
     current_state = 'Start'
 
-    for line in content:
+    for index, line in enumerate(content, start=1):
+        try:
+            if current_state == 'Start' and line.startswith('### #'):
+                current_state = 'Need coordinates'
 
-        if current_state == 'Start' and line.startswith('### #'):
-            current_state = 'Need coordinates'
+            elif current_state == 'Need coordinates':
+                the_language, the_time, the_duration, the_place = extract_spacetime_coordinates(line)
+                current_talk = current_talk._replace(time=the_time,
+                                                     duration=the_duration,
+                                                     place=the_place,
+                                                     language=the_language)
+                current_state = 'Need title'
 
-        elif current_state == 'Need coordinates':
-            the_language, the_time, the_duration, the_place = extract_spacetime_coordinates(line)
-            current_talk = current_talk._replace(time=the_time,
-                                                 duration=the_duration,
-                                                 place=the_place,
-                                                 language=the_language)
-            current_state = 'Need title'
+            elif current_state == 'Need title':
+                the_title = line.split('**')[1]
+                current_talk = current_talk._replace(title=the_title)
+                current_state = 'Need speaker'
 
-        elif current_state == 'Need title':
-            the_title = line.split('**')[1]
-            current_talk = current_talk._replace(title=the_title)
+            elif current_state == 'Need speaker':
+                current_talk = current_talk._replace(speaker=line.strip())
+                current_state = 'Need Fahrplan'
 
-            current_state = 'Need speaker'
+            elif current_state == 'Need Fahrplan':
+                current_talk = current_talk._replace(fahrplan_url=line.replace('Fahrplan:', '').strip())
+                current_state = 'Need Slides'
 
-        elif current_state == 'Need speaker':
-            current_talk = current_talk._replace(speaker=line.strip())
-            current_state = 'Need Fahrplan'
+            elif current_state == 'Need Slides':
+                current_state = 'Need translations'
 
-        elif current_state == 'Need Fahrplan':
-            current_talk = current_talk._replace(fahrplan_url=line.replace('Fahrplan:', '').strip())
-            current_state = 'Need Slides'
-
-        elif current_state == 'Need Slides':
-            current_state = 'Need translations'
-
-        elif current_state == 'Need translations':
-            match = re.match(TRANSLATION_RE, line)
-            if match:
-                the_translations = current_talk.translations + (match.group('lang'),)
-                new_translators = tuple(t.strip()
-                                        for t
-                                        in match.group('translators').split(',')
-                                        if match.group('translators').strip())
-                the_translators = current_talk.translators + new_translators
-                if new_translators:
-                    current_talk = current_talk._replace(translations=the_translations,
-                                                         translators=the_translators)
-            elif not line.strip():
-                yield current_talk
-                current_talk = Talk(date=day)
-                current_state = 'Start'
+            elif current_state == 'Need translations':
+                match = re.match(TRANSLATION_RE, line)
+                if match:
+                    the_translations = current_talk.translations + (match.group('lang'),)
+                    new_translators = tuple(t.strip()
+                                            for t
+                                            in match.group('translators').split(',')
+                                            if match.group('translators').strip())
+                    the_translators = current_talk.translators + new_translators
+                    if new_translators:
+                        current_talk = current_talk._replace(translations=the_translations,
+                                                             translators=the_translators)
+                elif not line.strip():
+                        yield current_talk
+                        current_talk = Talk(date=day)
+                        current_state = 'Start'
+        except Exception as e:
+            print('Line {}: {}'.format(index, e))
+            print('Skip to next talk')
+            current_state = 'Start'
 
 
 def main():

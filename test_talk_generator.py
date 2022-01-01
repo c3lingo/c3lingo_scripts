@@ -24,6 +24,14 @@ def test_translation_re():
     assert_that(result.group('lang'), equal_to('ru'))
 
 
+def test_talk_moved():
+    test_content = ['### #1  ',
+                    '**MOVED TO 16:00**',
+                    '']
+    talks = list(extract_talks(3, test_content))
+    assert_that(talks, empty())
+
+
 def test_talk_no_translation():
     test_content = ['### #1  ',
                     '[de] **10:45** +00:15, [r3s - Monheim/Rhein](https://meet.ffmuc.net/rc3r3sc3lingolowlatency)  ',
