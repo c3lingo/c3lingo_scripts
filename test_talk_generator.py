@@ -28,7 +28,7 @@ def test_talk_moved():
     test_content = ['### #1  ',
                     '**MOVED TO 16:00**',
                     '']
-    talks = list(extract_talks(test_content))
+    talks = list(extract_talks(test_content, "none"))
     assert_that(talks, empty())
 
 
@@ -41,7 +41,7 @@ def test_talk_no_translation():
                     'Slides (if available): https://speakers.c3lingo.org/talks/ea266d48-e185-5dbe-90dd-801a8fbe6ecc/  ',
                     '']
 
-    talks = list(extract_talks(test_content))
+    talks = list(extract_talks(test_content, "none"))
     assert_that(len(talks), equal_to(1))
     talk = talks[0]
     assert_that(talk.title, equal_to('R3S Opening'))
@@ -62,7 +62,7 @@ def test_talk_with_day():
                     'Slides (if available): https://speakers.c3lingo.org/talks/ea266d48-e185-5dbe-90dd-801a8fbe6ecc/  ',
                     '']
 
-    talks = list(extract_talks(test_content))
+    talks = list(extract_talks(test_content, "none"))
     assert_that(len(talks), equal_to(1))
     talk = talks[0]
     assert_that(talk.title, equal_to('R3S Opening'))
@@ -83,7 +83,7 @@ def test_talk_translations():
                     '→ en: one',
                     '→ ru: three, four',
                     '']
-    talks = list(extract_talks(test_content))
+    talks = list(extract_talks(test_content, "none"))
     assert_that(len(talks), equal_to(1))
     talk = talks[0]
     assert_that(len(talk.translations), equal_to(2))
@@ -103,7 +103,7 @@ def test_talk_translation_with_glossary():
                     '→ en: one',
                     '→ ru: three, four',
                     '']
-    talks = list(extract_talks(test_content))
+    talks = list(extract_talks(test_content, "none"))
     assert_that(len(talks), equal_to(1))
     talk = talks[0]
     assert_that(len(talk.translations), equal_to(2))
@@ -122,7 +122,7 @@ def test_talk_no_translator():
                     '→ en:',
                     '→ fr:  ',
                     '']
-    talks = list(extract_talks(test_content))
+    talks = list(extract_talks(test_content, "none"))
     assert_that(len(talks), equal_to(1))
     talk = talks[0]
     assert_that(talk.translations, empty())

@@ -50,7 +50,7 @@ def extract_spacetime_coordinates(line):
     return the_language, the_time, the_duration, the_place
 
 
-def extract_talks(content):
+def extract_talks(content, filename):
     day = 0
     current_talk = None
 
@@ -107,6 +107,6 @@ def extract_talks(content):
                         current_talk = Talk(date=day)
                         current_state = 'Start'
         except Exception as e:
-            print('Line {}: {}'.format(index, e))
+            print('File {}, line {}: {}'.format(filename, index, e))
             print('Skip to next talk')
             current_state = 'Start'

@@ -8,7 +8,7 @@ from tallyUpHours import tally_up
 
 def timesheet(args):
     all_talks = [t for f in args.infile
-                 for t in extract_talks(f)]
+                 for t in extract_talks(f, f.name)]
     scoreboard = tally_up(all_talks)
     nicks = list(scoreboard.keys())
     nicks.sort()
@@ -21,7 +21,7 @@ def timesheet(args):
 
 def leaderboard(args):
     all_talks = [t for f in args.infile
-                 for t in extract_talks(f)]
+                 for t in extract_talks(f, f.name)]
     scoreboard = tally_up(all_talks)
     hours = {}
     talks_count = {}
@@ -64,14 +64,14 @@ def leaderboard(args):
 
 def print_toots(args):
     for talk in [t for f in args.infile
-                 for t in extract_talks(f)]:
+                 for t in extract_talks(f, f.name)]:
         for lang in talk.translations:
             print(format_toot(talk, lang))
 
 
 def stats(args):
     all_talks = [t for f in args.infile
-                 for t in extract_talks(f)]
+                 for t in extract_talks(f, f.name)]
 
     interpreted_talks = [t for t in all_talks if t.translations]
 
@@ -93,7 +93,7 @@ def stats(args):
 
 def untranslated(args):
     untranslated = [t for f in args.infile
-                    for t in extract_talks(f)
+                    for t in extract_talks(f, f.name)
                     if not t.translations]
     for talk in untranslated:
         print("* [{talk.title}]({talk.fahrplan_url})".format(talk=talk))
